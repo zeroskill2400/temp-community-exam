@@ -14,21 +14,6 @@ CREATE TABLE IF NOT EXISTS public.users (
 -- 2. users 테이블에 RLS 활성화
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
--- 3. RLS 정책 생성 - 사용자는 자신의 레코드만 접근 가능
--- 기존 정책이 있다면 삭제 후 재생성
-DROP POLICY IF EXISTS "사용자는 자신의 프로필만 볼 수 있음" ON public.users;
-DROP POLICY IF EXISTS "사용자는 자신의 프로필만 업데이트할 수 있음" ON public.users;
-DROP POLICY IF EXISTS "시스템에서 사용자 프로필 생성 가능" ON public.users;
-
-CREATE POLICY "사용자는 자신의 프로필만 볼 수 있음" ON public.users
-  FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "사용자는 자신의 프로필만 업데이트할 수 있음" ON public.users
-  FOR UPDATE USING (auth.uid() = id);
-
--- 트리거 함수가 INSERT 할 수 있도록 허용하는 정책
-CREATE POLICY "시스템에서 사용자 프로필 생성 가능" ON public.users
-  FOR INSERT WITH CHECK (true);
 
 -- 4. 새 사용자가 가입할 때 자동으로 users 테이블에 레코드 생성하는 함수
 CREATE OR REPLACE FUNCTION public.handle_new_user()
