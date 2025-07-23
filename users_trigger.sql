@@ -45,32 +45,3 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
-
--- 6. 기존 사용자들을 위한 마이그레이션 (이미 가입했지만 users 테이블에 없는 경우)
-INSERT INTO users (id, email, name, nickname, created_at, updated_at)
-SELECT 
-  au.id,
-  au.email,
-  COALESCE(au.raw_user_meta_data->>'full_name', au.email),
-  COALESCE(au.raw_user_meta_data->>'full_name', split_part(au.email, '@', 1)),
-  au.created_at,
-  au.updated_at
-FROM auth.users au
-WHERE NOT EXISTS (
-  SELECT 1 FROM users u WHERE u.id = au.id
-);
-
--- 7. posts 테이블의 외래 키 제약 조건이 users 테이블을 참조하도록 설정
--- (이미 설정되어 있다면 무시됨)
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.table_constraints 
-    WHERE constraint_name = 'posts_author_id_fkey' 
-    AND table_name = 'posts'
-  ) THEN
-    ALTER TABLE posts 
-    ADD CONSTRAINT posts_author_id_fkey 
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
-  END IF;
-END $$; 
