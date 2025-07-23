@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { useCartStore } from "@/lib/cartStore";
 import PrivateRoute from "@/components/PrivateRoute";
 import Link from "next/link";

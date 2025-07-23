@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { supabase } from "@/lib/supabaseClient";
 import PrivateRoute from "@/components/PrivateRoute";
 
@@ -12,7 +12,7 @@ export default function CreatePostPage() {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const user = useUserData();
+  const { user, isLoading } = useUserData();
   const router = useRouter();
 
   const createPost = async (e: React.FormEvent) => {
@@ -55,9 +55,14 @@ export default function CreatePostPage() {
           const { error: insertError } = await supabase.from("users").insert({
             id: user.id,
             email: user.email || "",
-            name: user.full_name || user.email?.split("@")[0] || "Anonymous",
+            name:
+              user.user_metadata?.full_name ||
+              user.email?.split("@")[0] ||
+              "Anonymous",
             nickname:
-              user.full_name || user.email?.split("@")[0] || "Anonymous",
+              user.user_metadata?.full_name ||
+              user.email?.split("@")[0] ||
+              "Anonymous",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/app/lib/userStore";
-import { supabase } from "@/app/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Navigation() {
   const { user, clearUser } = useUserStore();
@@ -10,14 +10,15 @@ export default function Navigation() {
 
   const handleLogout = async () => {
     try {
-      // Supabase 로그아웃
-      await supabase.auth.signOut();
-
       // Zustand 상태 초기화
       clearUser();
 
-      // 메인 페이지로 이동
+      // Supabase 로그아웃
+      await supabase.auth.signOut();
+
+      // 메인 페이지로 이동 및 새로고침
       router.push("/");
+      router.refresh();
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }

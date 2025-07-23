@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 
 export default function Navigation() {
   const pathname = usePathname();
-  const user = useUserData();
+  const { user, isLoading } = useUserData();
 
   const isActive = (path: string) => pathname === path;
 

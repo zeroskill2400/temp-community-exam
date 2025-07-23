@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { supabase } from "@/lib/supabaseClient";
 import PrivateRoute from "@/components/PrivateRoute";
 
 export default function ProfilePage() {
-  const user = useUserData();
-  const [fullName, setFullName] = useState(user?.full_name || "");
+  const { user, isLoading } = useUserData();
+  const [fullName, setFullName] = useState(
+    user?.user_metadata?.full_name || ""
+  );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 

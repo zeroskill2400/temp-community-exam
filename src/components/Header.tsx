@@ -1,20 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { useCartStore } from "@/lib/cartStore";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const user = useUserData();
+  const { user, isLoading, clearUser } = useUserData();
   const getItemCount = useCartStore((state) => state.getItemCount);
   const router = useRouter();
 
   const handleLogout = async () => {
+    // 먼저 로컬 상태를 초기화
+    clearUser();
+
+    // Supabase 로그아웃
     await supabase.auth.signOut();
+
+    // 페이지 새로고침
     router.push("/");
+    router.refresh();
   };
+
+  // 로딩 중일 때는 아무것도 표시하지 않거나 로딩 상태를 표시
+  if (isLoading) {
+    return (
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="text-xl font-bold text-gray-900">
+              Community
+            </Link>
+            <div className="text-gray-500">로딩 중...</div>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-white border-b border-gray-200">

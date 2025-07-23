@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
-  const user = useUserData();
+  const { user, isLoading } = useUserData();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 

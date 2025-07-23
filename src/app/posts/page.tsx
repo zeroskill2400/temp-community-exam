@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link"; // 게시글 작성 버튼용 ////
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Post {
@@ -24,7 +24,7 @@ export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const user = useUserData();
+  const { user, isLoading: userLoading } = useUserData();
 
   useEffect(() => {
     fetchPosts();

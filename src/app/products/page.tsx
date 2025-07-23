@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useUserData } from "@/lib/useUserData";
+import { useUserData } from "@/app/lib/useUserData";
 import { useCartStore, Product } from "@/lib/cartStore";
 import { supabase } from "@/lib/supabaseClient";
 
